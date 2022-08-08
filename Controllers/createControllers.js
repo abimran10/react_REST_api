@@ -4,17 +4,17 @@ const AbdullahModel = require("../Model/Abdullah model");
 const CreateForm = (req, res ) => {
     res.render('AddUser');
   }
-const PostDb = async (req, upload, res) => {
+const PostDb = async (req, res) => {
     let newNote = new AbdullahModel({
       firstName: req.body.FirstName,
       lastName: req.body.LastName,
       Email: req.body.Email,
-      Image: req.file?req.file.fileimage:'',
+      // Image: req.file.fileimage,
 
     });
     newNote.save();
   
-    res.redirect("http://localhost:3000/create/CreateFormDisplay");
+    await res.redirect("http://localhost:3000/create/CreateFormDisplay");
   }
 
  module.exports = {CreateForm,PostDb}; 
