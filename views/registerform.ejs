@@ -106,7 +106,7 @@ body{
   cursor: pointer;
 }
 .Register{
- margin-left: 615px;
+ margin-left: 565px;
  margin-top: 50px;
 }
 .uploadImage{
@@ -121,17 +121,16 @@ body{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
-    <%- include('common/NavBar'); -%>
         <br>
         <br>
   <div class="Register">
            
-		   <h1 style="color:rgb(72, 72, 72) ;"><b>Add_User</b></h1>
+		   <h1 style="color:rgb(72, 72, 72) ;"><b>Register_Form</b></h1>
   
   </div>
     <!-- Body of Form starts -->
   	<div class="ex1" class="container">
-      <form method="post" autocomplete="on" action="/create/createpostdisplay" enctype="multipart/form-data" >
+      <form method="post" autocomplete="on" action="/Registerpost" enctype="" >
         <!--First name-->
     		<div class="box">
           <label for="firstName" class="fl fontLabel"> <b>First Name:</b> </label>
@@ -173,18 +172,27 @@ body{
     		<!-- Email ID--- -->
 			
             <!-- -Image- -->
-    		<div class="uploadImage" >
+    		<!-- <div class="uploadImage" >
 				<label for="image" > <b>SELECT IMAGE:</b> </label>
 	           <input  type="file" required name="image" >
 					
-		    </div>
+		    </div> -->
 				  <!--Image----->
-
-
+            
+            <!---Password---->
+    		<div class="box">
+				<label for="password" class="fl fontLabel"> <b>Password:</b> </label>
+					  <div class="fl iconBox"><i class="fa fa-envelope" aria-hidden="true"></i></div>
+					  <div class="fr">
+							  <input type="password" required name="Password" placeholder="Password" class="textBox">
+					  </div>
+					  <div class="clr"></div>
+				  </div>
+			<!-- Password--- -->
 
     		<!---Submit Button------>
     		<div class="box" style="background: #2d3e3f;text-align: center;" >
-    				<input type="Submit" name="Submit" class="submit" value="SUBMIT" style="text-align:center;">
+    				<input type="Submit" name="Submit" class="submit" value="Sign Up" style="text-align:center;">
     		</div>
     		<!---Submit Button----->
       </form>

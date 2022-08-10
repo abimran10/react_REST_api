@@ -3,16 +3,17 @@
 // app.use(express.static(__dirname + './index'));
 // const { Router } = require("express");
 const multer = require('multer')
-const connectToMongo = require("./db");
+const connectToMongo = require("./Database/db");
 connectToMongo();
 var bodyParser = require("body-parser");
-
+var md5 = require('md5');
 const ejs = require("ejs");
 const express = require("express");
-const AbdullahModel = require("./Model/Abdullah model");
-const { findById } = require("./Model/Abdullah model");
+const UserModel = require("./Model/user");
+const { findById } = require("./Model/user");
 const app = express();
 const port = 3000;
+app.use(express.static('uploads'))
 app.use(express.json());
 app.engine("html", require("ejs").renderFile);
 app.use(express.static(__dirname + "/public"));
@@ -33,39 +34,40 @@ app.use(
 app.use(bodyParser.json());
 
 // ROUTER
-const addUser = require('./routes/create')  
-const UserData = require('./routes/read')
-const deleteuser = require('./routes/delete')
-const updateuser = require('./routes/update')
+
+const CRUD = require('./routes/CRUD')
 
 
 
 
 
-app.use('/',UserData);
-app.use('/create',addUser);
-app.use('/delete',deleteuser);
-app.use('/edit',updateuser)
+app.use('/',CRUD);
+
 
 app.get('/header', (req, res) => {
   res.render('header');
 })
 
+app.get('/UserLogin', (req, res) => {
+  res.render('userlogin');
+})
+app.get('/RegisterForm',(req, res)=>{
+  res.render('registerform')
+})
+app.post('/Registerpost',async (req,res) => {
+  console.log("haha");
+  let newRegister = new UserModel({
+    firstName: req.body.FirstName,
+    lastName: req.body.LastName,
+    Email: req.body.Email,
+    password: md5(req.body.Password),
 
+  });
+  newRegister.save();
 
-//image upload
-// var storage = multer.diskStorage({
-//   destination: function(req,file,cb){
-//      cb(null, './uploads')
-//   },
-//   filename: function(req,res,cb){
-//     cb(null, file.fieldname+"_"+Date.now+"_"+file.originalname); 
-//   }
-// })
-// var upload = multer({
-//   storage: storage,
+  res.redirect("http://localhost:3000/RegisterForm");
+});
 
-// }).single("image");
 
 
 
@@ -138,7 +140,7 @@ app.listen(port, () => {
 
 
 // app.get("/", (req, res) => {
-//   AbdullahModel.find({}, function (err, abdullahaddress) {
+//   UserModel.find({}, function (err, abdullahaddress) {
 //     res.render("index", {
 //       registerlist: abdullahaddress,
 //     });
@@ -152,7 +154,7 @@ app.listen(port, () => {
 
 
 // app.post("/createpostdisplay", async (req, res) => {
-//   let newNote = new AbdullahModel({
+//   let newNote = new UserModel({
 //     firstName: req.body.FirstName,
 //     lastName: req.body.LastName,
 //     Email: req.body.Email,
@@ -165,7 +167,7 @@ app.listen(port, () => {
 
 // app.delete("/delete/:id", function (req, res) {
 //   id = req.params.id;
-//   AbdullahModel.findOneAndDelete({ _id: id }, function (err, val) {
+//   UserModel.findOneAndDelete({ _id: id }, function (err, val) {
 //   //  res.redirect("http://localhost:3000/");
 //     res.status(200).send('successfully deleted.');
     
@@ -177,7 +179,7 @@ app.listen(port, () => {
 // app.get("/edit/:_id", async function (req, res) {
 //   console.log("hhs");
 //   console.log(req.params._id);
-//   const abdullahaddress = await AbdullahModel.findById(req.params._id);
+//   const abdullahaddress = await UserModel.findById(req.params._id);
 
 //   console.log("data1", abdullahaddress);
 
@@ -198,7 +200,7 @@ app.listen(port, () => {
 //       Email:req.body.Email
 //     }
 //     console.log(mybodydata)
-//     AbdullahModel.findByIdAndUpdate(req.params._id, mybodydata , function (err, result) {
+//     UserModel.findByIdAndUpdate(req.params._id, mybodydata , function (err, result) {
 //     if(err){
 //       // req.flash('error_msg', 'Something went wrong! User could not updated.');
 //       console.log(err);
@@ -229,7 +231,7 @@ app.listen(port, () => {
 
 
 
-// AbdullahModel.findById(1, function(err,abdullahaddress){
+// UserModel.findById(1, function(err,abdullahaddress){
   //   console.log("abdullahaddress!",abdullahaddress);
 
   //  });
@@ -237,7 +239,7 @@ app.listen(port, () => {
   //   console.log("abdullahaddress!",abdullahaddress);
 
   //  });
-  //  AbdullahModel.findById(req.params.id, function(err, abdullahaddress) {
+  //  UserModel.findById(req.params.id, function(err, abdullahaddress) {
 
   //   });
 // app.get("/create/CreateFormDisplay", (req, res) => {
@@ -245,7 +247,7 @@ app.listen(port, () => {
 // });
 //  app.delete('/fetch/:firstname',function (req,res){
 //       fetchname=req.params.name;
-//        AbdullahModel.findOneAndDelete(({name:fetchname}),function(err,docs){
+//        UserModel.findOneAndDelete(({name:fetchname}),function(err,docs){
 //            res.send(docs);
 //         })
 //  })
@@ -253,7 +255,7 @@ app.listen(port, () => {
 //           let upfirstName=req.params.firstName;
 //           let uplastName= req.body.lastName;
 //           let upEmail= req.body.Email
-//           AbdullahModel.findOneAndUpdate(({firstName:upfirstName}),{$set:{lastName:uplastName,Email:upEmail}},{new:true},function(err,data){
+//           UserModel.findOneAndUpdate(({firstName:upfirstName}),{$set:{lastName:uplastName,Email:upEmail}},{new:true},function(err,data){
 //             if(data==null){
 //               res.send("nothing")
 //             }
@@ -269,8 +271,8 @@ app.listen(port, () => {
 // app.post("/addUser", async (req, res) => {
 //   try {
 //     console.log(req.body);
-//     const abdullahmodel = AbdullahModel(req.body);
-//     const response = await abdullahmodel.save();
+//     const UserModel = UserModel(req.body);
+//     const response = await UserModel.save();
 //     res.send(response);
 //   } catch (error) {
 //     console.log(error.message);
@@ -278,7 +280,7 @@ app.listen(port, () => {
 //   }
 // });
 // app.get("/User", function (req, res) {
-//   AbdullahModel.find(function (err, val) {
+//   UserModel.find(function (err, val) {
 //     if (err) {
 //       console.log(err);
 //     } else {
