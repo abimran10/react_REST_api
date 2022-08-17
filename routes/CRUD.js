@@ -2,9 +2,10 @@ const express = require('express');
 const { UserData,CreateForm,PostDb,DeleteData,updateForm,PostUpdateData } = require('../Controllers/crudControllers');
 const router=express.Router();
 const {userImageUpload} = require('../helper/userImage');
-  router.get('/', UserData);
+const auth = require('../middleware/Auth');
+  router.get('/',auth, UserData);
 
-  router.get('/create/CreateFormDisplay',CreateForm);
+  router.get('/create/CreateFormDisplay',auth,CreateForm);
 
   router.post('/create/createpostdisplay',userImageUpload.single('image'),(req,res) => PostDb(req,res));
 

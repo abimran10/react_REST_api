@@ -1,11 +1,8 @@
 require('dotenv').config();
+//All Required
 console.log(process.env.SECRET_KEY);
 const generatetoken = require("./helper/jwt_utility");
 const auth = require('./middleware/Auth')
-// app.set('view engine','ejs');
-// app.set('view engine', 'html');
-// app.use(express.static(__dirname + './index'));
-// const { Router } = require("express");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const multer = require('multer');
@@ -14,11 +11,13 @@ connectToMongo();
 var bodyParser = require("body-parser");
 var md5 = require('md5');
 const ejs = require("ejs");
+const { request } = require("express");
 const express = require("express");
 const UserModel = require("./Model/user");
 const { findById } = require("./Model/user");
 const app = express();
 const port = 3000;
+//app.use middleware
 app.use(express.static('uploads'))
 app.use(express.json());
 app.use(cookieParser());
@@ -43,135 +42,23 @@ app.use(bodyParser.json());
 // ROUTER
 
 const CRUD = require('./routes/CRUD');
-const { request } = require("express");
+const loginRegister = require('./routes/loginRegister') 
 
-
-
-
+// fazool
+// app.set('view engine','ejs');
+// app.set('view engine', 'html');
+// app.use(express.static(__dirname + './index'));
+// const { Router } = require("express");
 
 app.use('/',CRUD);
+app.use('/',loginRegister);
+
 
 
 app.get('/header', (req, res) => {
   res.render('header');
 })
 
-app.get('/SECRET',auth,(req, res) => {
-  res.render('SECRET');
-})
-
-app.get('/LOGOUT',auth,async (req, res) => {
-  try{
-   console.log(req.user);
-   
-   req.user.tokens = req.user.tokens.filter((Currenttoken)=>{
-          return  Currenttoken.token !== req.token;
-   })
-  //  req.user.tokens = [];
-
-   res.clearCookie("jwt");
-   console.log("logout");
-   await req.user.save();
-   res.render('userlogin');
-  }catch(err){
-    res.status(500).send(err);
-  }
-})
-
-
-
-
-app.get('/UserLogin', (req, res) => {
-  res.render('userlogin');
-})
-app.get('/RegisterForm',(req, res)=>{
-  res.render('registerform')
-})
-app.post('/Registerpost',async (req,res) => {
-  console.log("registerPost");
-  let UserRegister = new UserModel({
-    firstName: req.body.FirstName,
-    lastName: req.body.LastName,
-    Email: req.body.Email,
-    password: md5(req.body.Password),
-  });
-  const token =await generatetoken(UserRegister._id);
-  console.log("tokenPart:",token);
-  UserRegister.tokens = UserRegister.tokens.concat({token});
-  res.cookie("jwt",token,{
-    expires:new Date(Date.now()+3000),
-    httpOnly:true
-  });
-
-  //  async()=> {
-  //   try{
-  //     console.log(UserRegister._id);
-  //   const token = await jwt.sign({_id:UserRegister._id.toString()},process.env.SECRET_KEY); 
-  //   console.log(token);  
-  //   UserRegister.tokens = UserRegister.tokens.concat({token});
-  //   await UserRegister.save();
-
-
-  //   }catch(err){  
-  //          console.log("err",err);
-  //   } 
-    
-  // }
-  // token();
-
-
-  UserRegister.save();
-
-
-  res.redirect("http://localhost:3000/RegisterForm");
-});
-
-app.post('/UserLoginPost',async (req,res) => {
-  console.log("welcome to User Login");
-  const email= req.body.Email;
-  const password=req.body.Password;
-  console.log("Email:",email,"Password:",password);
-  const UserEmail = await UserModel.findOne({Email:email,password:md5(password)});
-  console.log(UserEmail);
-  const token = await generatetoken(UserEmail._id);
-  console.log("tokenPart:",token);
-  UserEmail.tokens = UserEmail.tokens.concat({token});
-
-  res.cookie("jwt",token,{
-    expires:new Date(Date.now()+900000),
-    httpOnly:true
-  });
-
-  // async()=> {
-  //   try{
-  //     console.log(UserEmail._id);
-  //   const token = await jwt.sign({_id:UserEmail._id.toString()},process.env.SECRET_KEY); 
-  //   console.log(token);  
-  //   UserEmail.tokens = UserEmail.tokens.concat({token});
-  //   await UserEmail.save();       
-
-
-  //   }catch(err){  
-  //          console.log("err",err);
-  //   } 
-    
-  // }
-  // token();
-  UserEmail.save();
-  // res.render('AddUser');
-  res.redirect("http://localhost:3000/");
-})
-
-
-// const createToken = async()=>{
-//   const token = await jwt.sign({_id:"62f38bd5c47a154513f03fc0"},"hey Abdullah");
-  
-// console.log("token:",token);
-//   const userVer = await jwt.verify(token,"hey Abdullah");
-//   console.log(userVer);
-// }
-
-// createToken();
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

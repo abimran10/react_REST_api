@@ -99,4 +99,4 @@ const PostDb = async (req,res) => {
  }
 
 //  module.exports = {UserData}; 
- module.exports = {UserData,CreateForm,PostDb,DeleteData,updateForm,PostUpdateData  }; 
+ module.exports = {UserData,CreateForm,PostDb,DeleteData,updateForm,PostUpdateData}; 
