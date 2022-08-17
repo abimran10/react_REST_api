@@ -21,6 +21,12 @@ const AbdullahSchema = new Schema({
     password: {
         type: String,
         require: true
-    }
+    },
+    tokens: [{
+        token:{ 
+            type: String,
+        }
+    }] 
+
 });
 module.exports = mongoose.model('abdullahaddress', AbdullahSchema);

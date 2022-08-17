@@ -121,6 +121,7 @@ body{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
+	<%- include('common/NavBar'); -%>
         <br>
         <br>
   <div class="Register">
@@ -130,8 +131,8 @@ body{
   </div>
     <!-- Body of Form starts -->
   	<div class="ex1" class="container">
-      <form method="" autocomplete="on" action="" enctype="" >
-
+      <form method="post" autocomplete="on"  action="/UserLoginPost" enctype="" >
+		<!-- onsubmit="onSubmit()"  -->
 
     		<!---Email ID---->
     		<div class="box">
@@ -163,5 +164,16 @@ body{
       </form>
   </div>
   <!--Body of Form ends--->
+  <!-- <script>
+	function onSubmit(){
+		let config = {
+			headers: {
+    		'Content-Type': 'application/json',
+			'Authorization': `Bearer ${}`
+    	}
+		}
+		fetch("....").then(res => res.json()).catch(err => console.log(err))
+	}
+  </script> -->
   </body>
 </html>
