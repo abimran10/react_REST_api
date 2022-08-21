@@ -1,6 +1,7 @@
 require('dotenv').config();
 //All Required
 console.log(process.env.SECRET_KEY);
+
 const generatetoken = require("./helper/jwt_utility");
 const auth = require('./middleware/Auth')
 const cookieParser = require("cookie-parser");
@@ -42,7 +43,10 @@ app.use(bodyParser.json());
 // ROUTER
 
 const CRUD = require('./routes/CRUD');
-const loginRegister = require('./routes/loginRegister') 
+const loginRegister = require('./routes/loginRegister'); 
+const { compileString } = require('sass');
+const user = require('./Model/user');
+const  transporter  = require('./Database/emailConfig');
 
 // fazool
 // app.set('view engine','ejs');
@@ -59,10 +63,53 @@ app.get('/header', (req, res) => {
   res.render('header');
 })
 
+app.get('/forgetpassword',(req, res)=>{
+  try{
+   res.render('forgotpassword');
+  }catch(error){
+    console.log(error);
+  }
+});
+app.post('/resetemail',async(req,res)=>{
+  //  res.send("chalgeya ma");
+   const email=req.body.Email;
+   if(email){
+    const user = await  UserModel.findOne({Email:email});
+     if(user){
+       const secret = user._id + process.env.SECRET_KEY;
+       const token = jwt.sign({_id:user._id},secret)
+       const link = `http://127.0.0.1:5000/api/user/reset/${user._id}/${token}`
+       console.log(link);
+       //send email
+       let info = await transporter.sendMail({
+        from:process.env.EMAIL_FROM,
+        to:user.Email,
+        subject:"AbdullahImran__RESET PASSWORD LINK",
+        html: `<a href=${link}>Click HERE</a> TO RESET YOUR PASSWORD` 
+       })
+       res.send("successful email sent reset password");
+     }else{
+        res.send("email not found");
+     }
+}else{
+    res.send("email field required");
+}
+})
+
+app.get('ResetPassword',async(req,res)=>{
+  
+})
+app.post('/UserResetPassword',async(req,res)=>{
+
+
+});
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
 
 
 

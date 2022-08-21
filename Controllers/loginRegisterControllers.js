@@ -29,6 +29,12 @@ const RegisterForm = (req, res)=>{
 
 const Registerpost = async (req,res) => {
     console.log("registerPost");
+    const emailExist = await UserModel.findOne({Email:req.body.Email});
+    if(emailExist){
+         console.log("exit");
+        return res.status(400).send('email already exit');
+    } 
+
     let UserRegister = new UserModel({
       firstName: req.body.FirstName,
       lastName: req.body.LastName,
