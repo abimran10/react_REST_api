@@ -78,7 +78,7 @@ app.post('/resetemail',async(req,res)=>{
      if(user){
        const secret = user._id + process.env.SECRET_KEY;
        const token = jwt.sign({_id:user._id},secret)
-       const link = `http://127.0.0.1:5000/api/user/reset/${user._id}/${token}`
+       const link = `http://localhost:3000/ResetPassword/${user._id}/${token}`
        console.log(link);
        //send email
        let info = await transporter.sendMail({
@@ -96,14 +96,49 @@ app.post('/resetemail',async(req,res)=>{
 }
 })
 
-app.get('ResetPassword',async(req,res)=>{
-  
-})
-app.post('/UserResetPassword',async(req,res)=>{
+app.get('/ResetPassword/:id/:token',async(req,res)=>{
+  console.log("emailrecievedid",req.params.id);
+  console.log("emailrecievedtoken",req.params.token);
+  let id = req.params.id;
+  let token = req.params.token;
+  res.render('resetpassword',{ID:id,TOKEN:token
 
+  });
+})
+
+app.post('/UserResetPassword/:id/:token',async(req,res)=>{
+  console.log("ma ma ageya");
+  console.log("resetid",req.params.id);
+  console.log("resettoken",req.params.token);
+  const password = req.body.Password;
+    const id = req.params.id;
+    console.log(id);
+    const token = req.params.token;
+    const user = await UserModel.findById(id);
+    console.log(user);
+    const new_secret = user._id + process.env.SECRET_KEY;
+    try{
+        jwt.verify(token,new_secret);
+        if(password){
+            await UserModel.findByIdAndUpdate(user._id,{$set:{password:password}})
+            // res.send("password reset successfuly");
+            res.render('userlogin');
+        }else{
+            console.log("password field required")
+            res.send("password field required")
+        }
+
+    }catch(err){
+        console.log(err);
+        res.send("invalid token");
+        console.log("token:","invalid")
+    }
 
 });
 
+app.get('/pratice',(req,res)=>{
+  res.render('PasswordPratice');
+})
 
 
 app.listen(port, () => {
