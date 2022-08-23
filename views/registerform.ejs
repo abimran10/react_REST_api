@@ -48,6 +48,7 @@ body{
 
 .fr{
 	float: right;
+	width: 182px;
 }
 
 .clr{
@@ -117,8 +118,32 @@ body{
 	  
 	</style>
     
-    <title>Form</title>
+    <title>UserRegister</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- <script>
+		function verifyPassword() {
+  var pw = document.getElementById("pswd").value;
+  //check empty password field
+  if(pw == "") {
+     document.getElementById("message").innerHTML = "**Fill the password please!";
+     return false;
+  }
+ 
+ //minimum password length validation
+  if(pw.length < 9) {
+     document.getElementById("message").innerHTML = "**Password length must be atleast 8 characters";
+     return false;
+  }
+
+//maximum length of password validation
+  if(pw.length > 15) {
+     document.getElementById("message").innerHTML = "**Password length must not exceed 15 characters";
+     return false;
+  } else {
+     alert("Password is correct");
+  }
+}
+	</script> -->
   </head>
   <body>
 	<%- include('common/NavBar'); -%>
@@ -131,7 +156,7 @@ body{
   </div>
     <!-- Body of Form starts -->
   	<div class="ex1" class="container">
-      <form method="post" autocomplete="on" action="/Registerpost" enctype="" >
+      <form onsubmit ="return verifyPassword()" method="post" autocomplete="on"  action="/Registerpost" enctype="" >
         <!--First name-->
     		<div class="box">
           <label for="firstName" class="fl fontLabel"> <b>First Name:</b> </label>
@@ -185,13 +210,16 @@ body{
 				<label for="password" class="fl fontLabel"> <b>Password:</b> </label>
 					  <div class="fl iconBox"><i class="fa fa-envelope" aria-hidden="true"></i></div>
 					  <div class="fr">
-							  <input type="password" required name="Password" placeholder="Password" class="textBox">
+							  <input type="password" id = "pswd" required name="Password" placeholder="Password" class="textBox" >
+							  <br>
+							  <span id = "message" style="color:red"> </span> 
 					  </div>
 					  <div class="clr"></div>
 				  </div>
 			<!-- Password--- -->
 
     		<!---Submit Button------>
+
     		<div class="box" style="background: #2d3e3f;text-align: center;" >
     				<input type="Submit" name="Submit" class="submit" value="Sign Up" style="text-align:center;">
     		</div>

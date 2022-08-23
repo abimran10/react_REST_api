@@ -1,7 +1,6 @@
 require('dotenv').config();
 //All Required
-console.log(process.env.SECRET_KEY);
-
+console.log(process.env.SECRET_KEY); 
 const generatetoken = require("./helper/jwt_utility");
 const auth = require('./middleware/Auth')
 const cookieParser = require("cookie-parser");
@@ -48,6 +47,8 @@ const { compileString } = require('sass');
 const user = require('./Model/user');
 const  transporter  = require('./Database/emailConfig');
 
+
+const {ResetUserValidation} =require("./middleware/user.validation")
 // fazool
 // app.set('view engine','ejs');
 // app.set('view engine', 'html');
@@ -70,6 +71,7 @@ app.get('/forgetpassword',(req, res)=>{
     console.log(error);
   }
 });
+
 app.post('/resetemail',async(req,res)=>{
   //  res.send("chalgeya ma");
    const email=req.body.Email;
@@ -105,8 +107,7 @@ app.get('/ResetPassword/:id/:token',async(req,res)=>{
 
   });
 })
-
-app.post('/UserResetPassword/:id/:token',async(req,res)=>{
+app.post('/UserResetPassword/:id/:token',ResetUserValidation,async(req,res)=>{
   console.log("ma ma ageya");
   console.log("resetid",req.params.id);
   console.log("resettoken",req.params.token);
@@ -120,7 +121,7 @@ app.post('/UserResetPassword/:id/:token',async(req,res)=>{
     try{
         jwt.verify(token,new_secret);
         if(password){
-            await UserModel.findByIdAndUpdate(user._id,{$set:{password:password}})
+            await UserModel.findByIdAndUpdate(user._id,{$set:{password:md5(password)}})
             // res.send("password reset successfuly");
             res.render('userlogin');
         }else{

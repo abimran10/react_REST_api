@@ -20,7 +20,7 @@ const AbdullahSchema = new Schema({
     },
     password: {
         type: String,
-        require: true
+        required: true
     },
     tokens: [{
         token:{ 
